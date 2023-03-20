@@ -6,105 +6,116 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 14:31:57 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/03/12 18:21:28 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/03/20 14:13:59 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int ft_init_philosphers(size_t philos, t_philo *list)
+t_philo	*ft_init_philos(t_time *time_data)
 {
-	size_t index;
-	t_philo *philo;
+	int		i;
+	t_philo	*list;
+	t_philo	*philo;
+	t_philo	*last;
 
-	index = 0;
-	while(philos > index)
+	i = 0;
+	list = NULL;
+	while (i < time_data->philos_num)
 	{
-		philo = ft_creat_philo(index, "thinking");
-		if(!philo)
-			return (0);
+		philo = ft_creat_philo((i + 1), time_data);
+		if (!philo)
+			return (NULL);
 		ft_lst_add_back(&list, philo);
-		index++;
+		i++;
 	}
-	return (1);
+	last = ft_get_last(list);
+	last->next = list;
+	return (list);
 }
 
-int take_fork(t_philo *philo, t_philo *next_philo)
+void	take_forks(t_philo *philo, unsigned long long start)
 {
-	philo->forks++;
-	next_philo->forks--;
-	printf("philo %d did take a fork\n", philo->id);
-	return (0);
+	pthread_mutex_lock(&philo->fork);
+	printf("%llu philo %d did take a fork\n", (get_time() - start), philo->id);
+	pthread_mutex_lock(&philo->next->fork);
+	printf("%llu philo %d did take a fork\n", (get_time() - start), philo->id);
 }
 
-int give_fork(t_philo *philo, t_philo *next_philo)
+void	*routine(void *args)
 {
-	philo->forks--;
-	next_philo->forks++;
-	printf("philo %d did give a fork\n", philo->id);
-	return (0);
-}
+	t_philo				*philo;
+	t_bool				is_infini;
+	unsigned long long	start;
 
-int start_eating(t_philo *philo)
-{
-	philo->status = "eating";
-	printf("philo %d is eating\n", philo->id);
-}
-
-int start_thinking(t_philo *philo)
-{
-	philo->status = "thinking";
-	printf("philo %d is thinking\n", philo->id);
-}	
-int start_sleeping(t_philo *philo)
-{
-	philo->status = "sleeping";
-	printf("philo %d is sleeping\n", philo->id);
-}	
-
-int start_routin(t_philo *philos, int die, int sleep, int eat)
-{
-	t_philo *tmp;
-	int index;
-
-	index = 0;
-	tmp = philos;
-	while(tmp)
+	philo = (t_philo *)(args);
+	philo->time_data->l_eat = get_time();
+	start = get_time();
+	if (!philo->time_data->times_to_eat)
 	{
-		if(tmp->forks == 1 && take_fork(tmp, tmp->next)
-		{
-			start_eating(tmp);
-			sleep(eat);
-		}
-		else
-		{
-			start_sleeping(tmp);
-			sleep(sleep);
-		}
-		tmp = tmp->next;
+		philo->time_data->times_to_eat = 1;
+		is_infini = TRUE;
 	}
-	return (1);
+	else
+		is_infini = FALSE;
+	if (philo->id % 2 != 0)
+		ft_usleep(get_time(), 50);
+	while (philo->time_data->times_to_eat)
+	{
+		take_forks(philo, start);
+		ft_eat(philo, start);
+		philo->time_data->l_eat = get_time();
+		pthread_mutex_unlock(&philo->fork);
+		pthread_mutex_unlock(&philo->next->fork);
+		ft_sleep(philo, start);
+		ft_think(philo, start);
+		if (is_infini == FALSE && philo->time_data->times_to_eat > 0)
+			philo->time_data->times_to_eat--;
+	}
+	pthread_exit(NULL);
 }
 
-int main(int ac, char **av)
+void	ft_start_philos(t_philo *phs)
 {
-	t_philo *philosophers;
-	size_t philos_number;
-	size_t time_die;
-	size_t time_sleep;
-	size_t time_eat;
-	if (ac != 5)
-		return (0);
-	philos_number = ft_atoi(av[1]);
-	time_die = ft_atoi(av[2]);
-	time_sleep = ft_atoi(av[3]);
-	time_eat = ft_atoi(av[4]);
+	t_philo	*tmp;
 
-	if(!ft_init_philosphers(philos_number, philosophers))
+	tmp = phs;
+	while (phs)
+	{
+		pthread_mutex_init(&phs->fork, NULL);
+		pthread_create(&phs->philo, NULL, routine, phs);
+		phs = phs->next;
+		if (phs->id == 1)
+			break ;
+	}
+	while (tmp)
+	{
+		pthread_join(tmp->philo, NULL);
+		tmp = tmp->next;
+		if (tmp->id == 1)
+			break ;
+	}
+}
+
+int	main(int ac, char **av)
+{
+	t_philo	*philos;
+	t_time	time;
+
+	if (ac < 5)
+	{
+		printf("at least 4 args required\n");
 		return (0);
-	if(!start_routin(philosophers, time_die, time_sleep, time_eat))
-		return (0);
-	
-	
+	}
+	time.philos_num = ft_atoi(av[1]);
+	time.die = ft_atoi(av[2]);
+	time.eat = ft_atoi(av[3]);
+	time.sleep = ft_atoi(av[4]);
+	if (ac == 6)
+		time.times_to_eat = ft_atoi(av[5]);
+	else
+		time.times_to_eat = 0;
+	philos = ft_init_philos(&time);
+	ft_start_philos(philos);
 	return (0);
 }
