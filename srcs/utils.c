@@ -6,7 +6,7 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 13:49:48 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/03/20 13:55:09 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/03/31 13:37:35 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	ft_atoi(const char *src)
 	return (result * signe);
 }
 
-t_philo	*ft_creat_philo(int id, t_time *time_data)
+t_philo	*ft_creat_philo(int id, t_data *data, t_time *time)
 {
 	t_philo	*philo;
 
@@ -46,7 +46,10 @@ t_philo	*ft_creat_philo(int id, t_time *time_data)
 		return (NULL);
 	philo->id = id;
 	philo->next = NULL;
-	philo->time_data = time_data;
+	philo->last_eat = 0;
+	philo->philo_data = data;
+	philo->time_data = time;
+	philo->eated = 0;
 	return (philo);
 }
 

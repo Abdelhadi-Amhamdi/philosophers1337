@@ -6,59 +6,58 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 14:30:06 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/03/20 14:22:40 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/03/31 13:40:05 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
+# include <pthread.h>
+# include <sys/time.h>
+# include <unistd.h>
 # include <stdio.h>
 # include <stdlib.h>
-# include <sys/time.h>
-# include <pthread.h>
-# include <unistd.h>
 
-typedef enum s_bool {FALSE,TRUE}	t_bool ;
+typedef enum s_bool {FALSE,TRUE}	t_bool;
 
 typedef struct s_time
 {
-	int					eat;
-	int					sleep;
-	int					die;
+	pthread_mutex_t		t;
+	unsigned long long	start;
+	int					time_to_eat;
+	int					time_to_die;
 	int					times_to_eat;
-	int					philos_num;
-	unsigned long long	l_eat;
+	int					time_to_sleep;
 }	t_time;
+
+typedef struct s_data
+{
+	pthread_mutex_t	die;
+	int				died;
+	pthread_mutex_t	write;
+	t_bool			is_infini;
+	int				philos_num;
+}	t_data;
 
 typedef struct s_philo
 {
-	int				id;
-	pthread_t		philo;
-	pthread_mutex_t	fork;
-	t_time			*time_data;
-	struct s_philo	*next;
+	int					id;
+	pthread_mutex_t		fork;
+	pthread_t			philo;
+	int					eated;
+	unsigned long long	last_eat;
+	t_data				*philo_data;
+	t_time				*time_data;
+	struct s_philo		*next;
 }	t_philo;
 
-// actions
-void				ft_sleep(t_philo *ph, unsigned long long start);
-void				ft_eat(t_philo *ph, unsigned long long start);
-void				ft_think(t_philo *ph, unsigned long long start);
-void				check_if_die(t_philo *ph, unsigned long \
-l_eat, unsigned long long start);
-void				ft_usleep(unsigned long long time, unsigned \
-long long ttsleep);
-
-// utils
+unsigned long long	get_time(void);
 int					ft_atoi(const char *src);
 t_philo				*ft_get_last(t_philo *list);
-t_philo				*ft_creat_philo(int id, t_time *time_data);
 void				ft_lst_add_back(t_philo **list, t_philo *item);
-unsigned long long	get_time(void);
-
-// main
-t_philo				*ft_init_philos(t_time *time_data);
-void				*routine(void *args);
-void				ft_start_philos(t_philo *phs);
+t_philo				*ft_creat_philo(int id, t_data *data, t_time *time);
+void				ft_usleep(unsigned long long time, \
+unsigned long long ttsleep);
 
 #endif

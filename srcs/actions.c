@@ -6,40 +6,37 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 13:50:51 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/03/20 13:56:43 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/03/31 13:25:41 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	ft_sleep(t_philo *ph, unsigned long long start)
+void	take_forks(t_philo *ph)
 {
-	printf("%llu philo %d sleeping\n", (get_time() - start), ph->id);
-	ft_usleep(get_time(), ph->time_data->sleep);
+	pthread_mutex_lock(&ph->fork);
+	ft_print("take fork", ph, (get_time() - ph->time_data->start));
+	pthread_mutex_lock(&ph->next->fork);
+	ft_print("take fork", ph, (get_time() - ph->time_data->start));
 }
 
-void	ft_eat(t_philo *ph, unsigned long long start)
+void	eat(t_philo *ph)
 {
-	printf("%llu philo %d eating\n", (get_time() - start), ph->id);
-	ft_usleep(get_time(), ph->time_data->eat);
+	ph->last_eat = get_time();
+	ft_print("eating", ph, (get_time() - ph->time_data->start));
+	ft_usleep(get_time(), ph->time_data->time_to_eat);
+	pthread_mutex_unlock(&ph->fork);
+	pthread_mutex_unlock(&ph->next->fork);
 }
 
-void	ft_think(t_philo *ph, unsigned long long start)
+void	ft_sleep(t_philo *ph)
 {
-	printf("%llu philo %d thinking\n", (get_time() - start), ph->id);
+	ph->last_eat = get_time();
+	ft_print("sleeping", ph, (get_time() - ph->time_data->start));
+	ft_usleep(get_time(), ph->time_data->time_to_sleep);
 }
 
-void	check_if_die(t_philo *ph, unsigned long l_eat, unsigned long long start)
+void	ft_think(t_philo *ph)
 {
-	if (get_time() - l_eat > ph->time_data->die)
-	{
-		printf("%llu philo %d die.\n", (get_time() - start), ph->id);
-		pthread_exit(NULL);
-	}
-}
-
-void	ft_usleep(unsigned long long time, unsigned long long ttsleep)
-{
-	while (get_time() - time < ttsleep)
-		usleep(50);
+	ft_print("thinking", ph, (get_time() - ph->time_data->start));
 }

@@ -6,7 +6,7 @@
 #    By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/20 14:14:30 by aamhamdi          #+#    #+#              #
-#    Updated: 2023/03/20 14:22:12 by aamhamdi         ###   ########.fr        #
+#    Updated: 2023/03/23 17:35:08 by aamhamdi         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ BUILD_DIR = build/
 S_HEADER = philo.h
 
 # files
-SRC = philo.c actions.c utils.c
+SRC = philo.c actions.c utils.c utils2.c
 SRCS = $(addprefix $(SRCS_DIR), $(SRC))
 OBJ = $(SRC:.c=.o)
 OBJS = $(addprefix $(BUILD_DIR), $(OBJ))

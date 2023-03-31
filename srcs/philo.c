@@ -6,13 +6,13 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 14:31:57 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/03/20 14:13:59 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/03/31 13:34:38 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-t_philo	*ft_init_philos(t_time *time_data)
+t_philo	*ft_init_philos(t_time *time_data, t_data *philo_data)
 {
 	int		i;
 	t_philo	*list;
@@ -21,9 +21,10 @@ t_philo	*ft_init_philos(t_time *time_data)
 
 	i = 0;
 	list = NULL;
-	while (i < time_data->philos_num)
+	time_data->start = get_time();
+	while (i < philo_data->philos_num)
 	{
-		philo = ft_creat_philo((i + 1), time_data);
+		philo = ft_creat_philo((i + 1), philo_data, time_data);
 		if (!philo)
 			return (NULL);
 		ft_lst_add_back(&list, philo);
@@ -34,45 +35,51 @@ t_philo	*ft_init_philos(t_time *time_data)
 	return (list);
 }
 
-void	take_forks(t_philo *philo, unsigned long long start)
-{
-	pthread_mutex_lock(&philo->fork);
-	printf("%llu philo %d did take a fork\n", (get_time() - start), philo->id);
-	pthread_mutex_lock(&philo->next->fork);
-	printf("%llu philo %d did take a fork\n", (get_time() - start), philo->id);
-}
-
 void	*routine(void *args)
 {
-	t_philo				*philo;
-	t_bool				is_infini;
-	unsigned long long	start;
+	t_philo	*philo;
 
 	philo = (t_philo *)(args);
-	philo->time_data->l_eat = get_time();
-	start = get_time();
-	if (!philo->time_data->times_to_eat)
-	{
-		philo->time_data->times_to_eat = 1;
-		is_infini = TRUE;
-	}
-	else
-		is_infini = FALSE;
-	if (philo->id % 2 != 0)
+	philo->last_eat = get_time();
+	if (philo->id % 2)
 		ft_usleep(get_time(), 50);
-	while (philo->time_data->times_to_eat)
+	while (philo->eated < philo->time_data->times_to_eat)
 	{
-		take_forks(philo, start);
-		ft_eat(philo, start);
-		philo->time_data->l_eat = get_time();
-		pthread_mutex_unlock(&philo->fork);
-		pthread_mutex_unlock(&philo->next->fork);
-		ft_sleep(philo, start);
-		ft_think(philo, start);
-		if (is_infini == FALSE && philo->time_data->times_to_eat > 0)
-			philo->time_data->times_to_eat--;
+		take_forks(philo);
+		eat(philo);
+		if (philo->eated + 1 == philo->time_data->times_to_eat \
+		&& !philo->philo_data->is_infini)
+			break ;
+		ft_sleep(philo);
+		ft_think(philo);
+		if (!philo->philo_data->is_infini)
+			philo->eated++;
 	}
 	pthread_exit(NULL);
+}
+
+void	check_death(t_philo *phs)
+{
+	t_philo	*tmp;
+
+	tmp = phs;
+	while (tmp->philo_data->died == 0)
+	{
+		ft_usleep(get_time(), 10);
+		while (tmp)
+		{
+			if (get_time() - tmp->last_eat > tmp->time_data->time_to_die)
+			{
+				pthread_mutex_lock(&tmp->philo_data->die);
+				tmp->philo_data->died = 1;
+				pthread_mutex_unlock(&tmp->philo_data->die);
+				break ;
+			}
+			tmp = tmp->next;
+			if (tmp->id == 1)
+				break ;
+		}
+	}
 }
 
 void	ft_start_philos(t_philo *phs)
@@ -88,6 +95,7 @@ void	ft_start_philos(t_philo *phs)
 		if (phs->id == 1)
 			break ;
 	}
+	check_death(phs);
 	while (tmp)
 	{
 		pthread_join(tmp->philo, NULL);
@@ -99,23 +107,19 @@ void	ft_start_philos(t_philo *phs)
 
 int	main(int ac, char **av)
 {
+	t_time	time_data;
+	t_data	philo_data;
 	t_philo	*philos;
-	t_time	time;
 
 	if (ac < 5)
-	{
-		printf("at least 4 args required\n");
 		return (0);
-	}
-	time.philos_num = ft_atoi(av[1]);
-	time.die = ft_atoi(av[2]);
-	time.eat = ft_atoi(av[3]);
-	time.sleep = ft_atoi(av[4]);
-	if (ac == 6)
-		time.times_to_eat = ft_atoi(av[5]);
-	else
-		time.times_to_eat = 0;
-	philos = ft_init_philos(&time);
+	philo_data.philos_num = ft_atoi(av[1]);
+	get_args_data(av + 2, &time_data);
+	check_if_infini(&philo_data, &time_data);
+	pthread_mutex_init(&philo_data.write, NULL);
+	pthread_mutex_init(&philo_data.die, NULL);
+	philo_data.died = 0;
+	philos = ft_init_philos(&time_data, &philo_data);
 	ft_start_philos(philos);
 	return (0);
 }
