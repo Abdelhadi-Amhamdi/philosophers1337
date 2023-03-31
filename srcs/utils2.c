@@ -6,7 +6,7 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 17:34:25 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/03/31 13:38:17 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/03/31 13:52:06 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,6 @@ void	ft_print(char *str, t_philo *ph, unsigned long long time)
 	pthread_mutex_lock(&ph->philo_data->die);
 	if (ph->philo_data->died)
 	{
-		(void)str;
-		pthread_mutex_lock(&ph->philo_data->write);
-		printf("%lld %d died\n", time, ph->id);
-		pthread_mutex_unlock(&ph->philo_data->write);
 		pthread_mutex_unlock(&ph->philo_data->die);
 		pthread_exit(NULL);
 	}

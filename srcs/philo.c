@@ -6,7 +6,7 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 14:31:57 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/03/31 13:34:38 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/03/31 13:54:44 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,11 @@ void	check_death(t_philo *phs)
 		ft_usleep(get_time(), 10);
 		while (tmp)
 		{
-			if (get_time() - tmp->last_eat > tmp->time_data->time_to_die)
+			if ((int)(get_time() - tmp->last_eat) > tmp->time_data->time_to_die)
 			{
+				pthread_mutex_lock(&tmp->philo_data->write);
+				printf("%lld %d died", (get_time() - tmp->time_data->start), tmp->id);
+				pthread_mutex_unlock(&tmp->philo_data->write);
 				pthread_mutex_lock(&tmp->philo_data->die);
 				tmp->philo_data->died = 1;
 				pthread_mutex_unlock(&tmp->philo_data->die);
