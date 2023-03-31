@@ -6,7 +6,7 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 14:30:06 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/03/31 13:47:23 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/03/31 15:39:34 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ typedef struct s_philo
 	int					eated;
 	unsigned long long	last_eat;
 	t_data				*philo_data;
-	t_time				*time_data;
+	t_time				*time;
 	struct s_philo		*next;
 }	t_philo;
 
