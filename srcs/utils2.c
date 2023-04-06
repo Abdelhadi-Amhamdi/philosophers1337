@@ -6,7 +6,7 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 17:34:25 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/03/31 15:09:43 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/04/06 13:51:09 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,24 +32,18 @@ void	check_if_infini(t_data *philo_data, t_time *time)
 	}
 	else
 		philo_data->is_infini = FALSE;
-	philo_data->died = 0;
 }
 
 void	ft_print(char *str, t_philo *ph, unsigned long long time)
 {
-	pthread_mutex_lock(&ph->philo_data->die);
-	if (ph->philo_data->died)
+	pthread_mutex_lock(&ph->philo_data->write);
+	if (!str)
 	{
-		pthread_mutex_unlock(&ph->philo_data->die);
-		pthread_exit(NULL);
+		printf("%lld %d died\n", time, ph->id);
+		return ;
 	}
-	else
-	{
-		pthread_mutex_lock(&ph->philo_data->write);
-		printf("%lld %d %s\n", time, ph->id, str);
-		pthread_mutex_unlock(&ph->philo_data->write);
-	}
-	pthread_mutex_unlock(&ph->philo_data->die);
+	printf("%lld %d %s\n", time, ph->id, str);
+	pthread_mutex_unlock(&ph->philo_data->write);
 }
 
 void	ft_usleep(unsigned long long time, unsigned long long ttsleep)

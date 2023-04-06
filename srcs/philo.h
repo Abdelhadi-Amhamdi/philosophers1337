@@ -6,7 +6,7 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 14:30:06 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/03/31 15:39:34 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/04/06 13:43:19 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@ typedef struct s_time
 
 typedef struct s_data
 {
-	pthread_mutex_t	die;
-	int				died;
 	pthread_mutex_t	write;
 	t_bool			is_infini;
 	int				philos_num;
@@ -43,6 +41,7 @@ typedef struct s_data
 typedef struct s_philo
 {
 	int					id;
+	pthread_mutex_t		t;
 	pthread_mutex_t		fork;
 	pthread_t			philo;
 	int					eated;

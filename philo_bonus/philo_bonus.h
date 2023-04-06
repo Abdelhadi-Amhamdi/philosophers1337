@@ -6,7 +6,18 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 13:58:12 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/03/31 14:06:25 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/03/31 15:53:33 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef PHILO_BONUS_H
+#define PHILO_BONUS_H
+
+
+// structs
+
+// prototypes
+
+
+
+#endif

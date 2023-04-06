@@ -6,7 +6,15 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 13:58:44 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/03/31 14:06:22 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/03/31 15:53:54 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "philo_bonus.h"
+
+
+
+int	main(int ac, char **av)
+{
+	
+}
