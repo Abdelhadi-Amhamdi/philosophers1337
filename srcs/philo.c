@@ -6,7 +6,7 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 14:31:57 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/04/06 13:51:01 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/04/08 11:02:44 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ void	check_death(t_philo *phs)
 			{
 				if (tmp->eated != tmp->time->times_to_eat)
 					ft_print(NULL, tmp, (get_time() - tmp->time->start));
+				pthread_mutex_unlock(&tmp->t);
 				return ;
 			}
 			pthread_mutex_unlock(&tmp->t);
@@ -96,33 +97,33 @@ void	ft_start_philos(t_philo *phs)
 		pthread_mutex_init(&phs->fork, NULL);
 		pthread_mutex_init(&phs->t, NULL);
 		pthread_create(&phs->philo, NULL, routine, phs);
+		pthread_detach(phs->philo);
 		phs = phs->next;
 		if (phs->id == 1)
 			break ;
 	}
 	check_death(phs);
-	while (tmp)
-	{
-		pthread_detach(tmp->philo);
-		tmp = tmp->next;
-		if (tmp->id == 1)
-			break ;
-	}
 }
 
 int	main(int ac, char **av)
 {
-	t_time	time;
-	t_data	philo_data;
+	t_time	*time_data;
+	t_data	*philo_data;
 	t_philo	*philos;
 
+	philos = NULL;
 	if (ac < 5)
 		return (0);
-	philo_data.philos_num = ft_atoi(av[1]);
-	get_args_data(av + 2, &time);
-	check_if_infini(&philo_data, &time);
-	pthread_mutex_init(&philo_data.write, NULL);
-	philos = ft_init_philos(&time, &philo_data);
+	time_data = malloc(sizeof(t_time));
+	philo_data = malloc(sizeof(t_data));
+	philo_data->philos_num = ft_atoi(av[1]);
+	get_args_data(av + 2, time_data);
+	check_if_infini(philo_data, time_data);
+	pthread_mutex_init(&philo_data->write, NULL);
+	philos = ft_init_philos(time_data, philo_data);
 	ft_start_philos(philos);
+	// ft_free_list(philos);
+	free(philo_data);
+	free(time_data);
 	return (0);
 }

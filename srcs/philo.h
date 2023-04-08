@@ -6,7 +6,7 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 14:30:06 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/04/06 13:43:19 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/04/08 11:02:12 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ void				get_args_data(char **args, t_time *time_data);
 void				check_if_infini(t_data *philo_data, t_time *time);
 void				ft_print(char *str, t_philo *ph, unsigned long long time);
 int					ft_atoi(const char *src);
+void				ft_free_list(t_philo *phs);
 
 // time
 unsigned long long	get_time(void);

@@ -6,7 +6,7 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 17:34:25 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/04/06 13:51:09 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/04/08 11:01:55 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,11 @@ void	ft_print(char *str, t_philo *ph, unsigned long long time)
 	if (!str)
 	{
 		printf("%lld %d died\n", time, ph->id);
+		pthread_mutex_destroy(&ph->philo_data->write);
 		return ;
 	}
-	printf("%lld %d %s\n", time, ph->id, str);
+	else
+		printf("%lld %d %s\n", time, ph->id, str);
 	pthread_mutex_unlock(&ph->philo_data->write);
 }
 
@@ -50,4 +52,23 @@ void	ft_usleep(unsigned long long time, unsigned long long ttsleep)
 {
 	while (get_time() - time < ttsleep)
 		usleep(50);
+}
+
+void	ft_free_list(t_philo *phs)
+{
+	t_philo	*next;
+	t_philo	*tmp;
+
+	tmp = phs;
+	while (tmp)
+	{
+		next = tmp->next;
+		pthread_mutex_lock(&phs->t);
+		pthread_mutex_destroy(&phs->t);
+		pthread_mutex_destroy(&phs->fork);
+		free(tmp);
+		tmp = next;
+		if (tmp->next->id == 1)
+			tmp->next = NULL ;
+	}
 }
