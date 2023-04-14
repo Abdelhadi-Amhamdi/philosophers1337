@@ -6,7 +6,7 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 17:34:25 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/04/08 11:01:55 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/04/14 00:17:33 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	ft_print(char *str, t_philo *ph, unsigned long long time)
 void	ft_usleep(unsigned long long time, unsigned long long ttsleep)
 {
 	while (get_time() - time < ttsleep)
-		usleep(50);
+		usleep(500);
 }
 
 void	ft_free_list(t_philo *phs)

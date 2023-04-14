@@ -6,7 +6,7 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 14:31:57 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/04/08 11:02:44 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/04/14 01:43:53 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ t_philo	*ft_init_philos(t_time *time_data, t_data *philo_data)
 
 	i = 0;
 	list = NULL;
-	time_data->start = 0;
 	while (i < philo_data->philos_num)
 	{
 		philo = ft_creat_philo((i + 1), philo_data, time_data);
@@ -40,45 +39,52 @@ void	*routine(void *args)
 	t_philo	*philo;
 
 	philo = (t_philo *)(args);
-	pthread_mutex_lock(&philo->t);
-	philo->last_eat = get_time();
-	pthread_mutex_unlock(&philo->t);
 	if (philo->id % 2)
-		ft_usleep(get_time(), 50);
+		usleep(10000);
 	while (philo->eated < philo->time->times_to_eat)
 	{
 		take_forks(philo);
 		eat(philo);
 		if (philo->eated + 1 == philo->time->times_to_eat \
 		&& !philo->philo_data->is_infini)
+		{
+			pthread_mutex_lock(&philo->t);
+			philo->eated++;
+			pthread_mutex_unlock(&philo->t);
 			break ;
+		}
 		ft_sleep(philo);
 		ft_think(philo);
 		if (!philo->philo_data->is_infini)
+		{
+			pthread_mutex_lock(&philo->t);
 			philo->eated++;
+			pthread_mutex_unlock(&philo->t);
+		}
 	}
-	pthread_exit(NULL);
+	return (NULL);
 }
 
 void	check_death(t_philo *phs)
 {
-	t_philo	*tmp;
+	t_philo				*tmp;
+	unsigned long long	lm;
 
 	tmp = phs;
 	while (1)
 	{
-		ft_usleep(get_time(), 10);
+		usleep(1000);
 		while (tmp)
 		{
 			pthread_mutex_lock(&tmp->t);
-			if ((int)(get_time() - tmp->last_eat) > tmp->time->time_to_die)
+			lm = tmp->last_eat;
+			pthread_mutex_unlock(&tmp->t);
+			if ((int)(get_time() - lm) > tmp->time->time_to_die)
 			{
-				if (tmp->eated != tmp->time->times_to_eat)
+				if ((tmp->eated) != tmp->time->times_to_eat)
 					ft_print(NULL, tmp, (get_time() - tmp->time->start));
-				pthread_mutex_unlock(&tmp->t);
 				return ;
 			}
-			pthread_mutex_unlock(&tmp->t);
 			tmp = tmp->next;
 			if (tmp->id == 1)
 				break ;
@@ -96,7 +102,14 @@ void	ft_start_philos(t_philo *phs)
 	{
 		pthread_mutex_init(&phs->fork, NULL);
 		pthread_mutex_init(&phs->t, NULL);
+		phs->last_eat = get_time();
 		pthread_create(&phs->philo, NULL, routine, phs);
+		phs = phs->next;
+		if (phs->id == 1)
+			break ;
+	}
+	while (phs)
+	{
 		pthread_detach(phs->philo);
 		phs = phs->next;
 		if (phs->id == 1)
@@ -122,7 +135,6 @@ int	main(int ac, char **av)
 	pthread_mutex_init(&philo_data->write, NULL);
 	philos = ft_init_philos(time_data, philo_data);
 	ft_start_philos(philos);
-	// ft_free_list(philos);
 	free(philo_data);
 	free(time_data);
 	return (0);
