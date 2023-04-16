@@ -6,7 +6,7 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 14:31:57 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/04/16 02:11:46 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/04/16 02:33:57 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,7 @@ int	main(int ac, char **av)
 	pthread_mutex_init(&philo_data->write, NULL);
 	philos = ft_init_philos(time_data, philo_data);
 	ft_start_philos(philos);
+	ft_free_list(philos);
 	free(philo_data);
 	free(time_data);
 	return (0);

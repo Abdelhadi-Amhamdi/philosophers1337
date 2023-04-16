@@ -6,7 +6,7 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 17:34:25 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/04/16 01:54:32 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/04/16 02:32:01 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,17 +61,17 @@ void	ft_free_list(t_philo *phs)
 {
 	t_philo	*next;
 	t_philo	*tmp;
+	int		i;
+	int		len;
 
+	i = 0;
+	len = phs->philo_data->philos_num;
 	tmp = phs;
-	while (tmp)
+	while (i < len)
 	{
 		next = tmp->next;
-		pthread_mutex_lock(&phs->t);
-		pthread_mutex_destroy(&phs->t);
-		pthread_mutex_destroy(&phs->fork);
 		free(tmp);
 		tmp = next;
-		if (tmp->next->id == 1)
-			tmp->next = NULL ;
+		i++;
 	}
 }
