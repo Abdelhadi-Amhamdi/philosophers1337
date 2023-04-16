@@ -6,13 +6,13 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 17:34:25 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/04/14 00:17:33 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/04/16 01:54:32 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	get_args_data(char **args, t_time *time_data)
+int	get_args_data(char **args, t_time *time_data)
 {
 	time_data->time_to_die = ft_atoi(args[0]);
 	time_data->time_to_eat = ft_atoi(args[1]);
@@ -21,6 +21,9 @@ void	get_args_data(char **args, t_time *time_data)
 		time_data->times_to_eat = ft_atoi(args[3]);
 	else
 		time_data->times_to_eat = 0;
+	if (args[3] && time_data->times_to_eat < 1)
+		return (1);
+	return (0);
 }
 
 void	check_if_infini(t_data *philo_data, t_time *time)

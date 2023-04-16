@@ -6,7 +6,7 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 14:31:57 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/04/14 01:43:53 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/04/16 02:11:46 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,22 +45,11 @@ void	*routine(void *args)
 	{
 		take_forks(philo);
 		eat(philo);
-		if (philo->eated + 1 == philo->time->times_to_eat \
+		if (philo->eated == philo->time->times_to_eat \
 		&& !philo->philo_data->is_infini)
-		{
-			pthread_mutex_lock(&philo->t);
-			philo->eated++;
-			pthread_mutex_unlock(&philo->t);
 			break ;
-		}
 		ft_sleep(philo);
 		ft_think(philo);
-		if (!philo->philo_data->is_infini)
-		{
-			pthread_mutex_lock(&philo->t);
-			philo->eated++;
-			pthread_mutex_unlock(&philo->t);
-		}
 	}
 	return (NULL);
 }
@@ -79,7 +68,8 @@ void	check_death(t_philo *phs)
 			pthread_mutex_lock(&tmp->t);
 			lm = tmp->last_eat;
 			pthread_mutex_unlock(&tmp->t);
-			if ((int)(get_time() - lm) > tmp->time->time_to_die)
+			if ((int)(get_time() - lm) > tmp->time->time_to_die \
+			|| tmp->eated == tmp->time->times_to_eat)
 			{
 				if ((tmp->eated) != tmp->time->times_to_eat)
 					ft_print(NULL, tmp, (get_time() - tmp->time->start));
@@ -125,12 +115,17 @@ int	main(int ac, char **av)
 	t_philo	*philos;
 
 	philos = NULL;
-	if (ac < 5)
+	if (ac < 5 || ac > 6)
 		return (0);
 	time_data = malloc(sizeof(t_time));
 	philo_data = malloc(sizeof(t_data));
 	philo_data->philos_num = ft_atoi(av[1]);
-	get_args_data(av + 2, time_data);
+	if (get_args_data(av + 2, time_data) || parsing(philo_data, time_data))
+	{
+		free(philo_data);
+		free(time_data);
+		return (0);
+	}
 	check_if_infini(philo_data, time_data);
 	pthread_mutex_init(&philo_data->write, NULL);
 	philos = ft_init_philos(time_data, philo_data);
