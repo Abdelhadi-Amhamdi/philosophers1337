@@ -6,7 +6,7 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 13:58:44 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/04/16 02:43:36 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/04/17 02:25:39 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,21 +17,11 @@ void	routine(t_philo *philo, sem_t *semaphore)
 	int	i;
 
 	i = philo->data->times_to_eat;
-	if ((philo->id % 2))
-		usleep(1000);
 	while (i)
 	{
-		philo->last_meal = get_time();
-		sem_wait(semaphore);
-		ft_print("has taken a fork", philo);
-		ft_print("has taken a fork", philo);
-		ft_print("is eating", philo);
-		if (ft_usleep(get_time(), philo->data->time_to_eat, philo))
-			ft_print(NULL, philo);
-		philo->last_meal = get_time();
-		sem_post(semaphore);
+		ft_eat(philo, semaphore);
 		if (!(i - 1) && !philo->data->is_infini)
-			exit (1);
+			exit (0);
 		ft_print("is sleeping", philo);
 		if (ft_usleep(get_time(), philo->data->time_to_sleep, philo))
 			ft_print(NULL, philo);
@@ -39,23 +29,33 @@ void	routine(t_philo *philo, sem_t *semaphore)
 		if (!philo->data->is_infini)
 			i--;
 	}
+	exit (0);
 }
 
 void	ft_start_philos(t_philo *phs, sem_t *sem)
 {
+	pid_t	pid;
+
+	phs->data->start = get_time();
 	while (phs)
 	{
+		phs->last_meal = get_time();
 		phs->pid = fork();
 		if (phs->pid == 0)
-		{
 			routine(phs, sem);
-			exit (1);
-		}
 		phs = phs->next;
 		if (phs->id == 1)
 			break ;
 	}
-	return ;
+	pid = waitpid(-1, NULL, 0);
+	while (phs)
+	{
+		if (phs->pid != pid)
+			kill(phs->pid, SIGINT);
+		phs = phs->next;
+		if (phs->id == 1)
+			break ;
+	}
 }
 
 int	parsing(t_data *data)
@@ -87,7 +87,7 @@ void	ft_free_list(t_philo *ph)
 
 int	main(int ac, char **av)
 {
-	sem_t	*semaphore;
+	sem_t	*sem_eat;
 	t_data	*data;
 	t_philo	*philos;
 
@@ -98,14 +98,16 @@ int	main(int ac, char **av)
 		return (0);
 	if (get_data_args(data, av + 1) || parsing(data))
 		return (free(data), 0);
-	sem_unlink("sem");
-	semaphore = sem_open("sem", O_CREAT, 0666, (data->philos_number / 2));
+	sem_unlink("sem_eat");
+	sem_unlink("sem_write");
+	sem_eat = sem_open("sem_eat", O_CREAT, 0666, data->philos_number);
+	data->sem_write = sem_open("sem_write", O_CREAT, 0666, 1);
 	philos = init_philos(data->philos_number, data);
-	data->start = get_time();
-	ft_start_philos(philos, semaphore);
-	wait(NULL);
-	sem_close(semaphore);
-	sem_unlink("sem");
+	ft_start_philos(philos, sem_eat);
+	sem_close(sem_eat);
+	sem_close(data->sem_write);
+	sem_unlink("sem_eat");
+	sem_unlink("sem_write");
 	ft_free_list(philos);
 	free(data);
 	return (0);

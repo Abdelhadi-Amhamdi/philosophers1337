@@ -6,7 +6,7 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 13:58:47 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/04/14 17:47:21 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/04/17 02:26:06 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,4 +67,20 @@ t_philo	*init_philos(int len, t_data *data)
 	}
 	item->next = list;
 	return (list);
+}
+
+void	ft_eat(t_philo *ph, sem_t *sem_eat)
+{
+	sem_wait(sem_eat);
+	ft_print("has taken a fork", ph);
+	if (ph->data->philos_number == 1)
+		ft_print(NULL, ph);
+	sem_wait(sem_eat);
+	ft_print("has taken a fork", ph);
+	ft_print("is eating", ph);
+	if (ft_usleep(get_time(), ph->data->time_to_eat, ph))
+		ft_print(NULL, ph);
+	ph->last_meal = get_time();
+	sem_post(sem_eat);
+	sem_post(sem_eat);
 }
