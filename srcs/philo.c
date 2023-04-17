@@ -6,7 +6,7 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 14:31:57 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/04/16 02:33:57 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/04/17 18:56:01 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	*routine(void *args)
 		eat(philo);
 		if (philo->eated == philo->time->times_to_eat \
 		&& !philo->philo_data->is_infini)
-			break ;
+			return (NULL);
 		ft_sleep(philo);
 		ft_think(philo);
 	}
@@ -68,8 +68,8 @@ void	check_death(t_philo *phs)
 			pthread_mutex_lock(&tmp->t);
 			lm = tmp->last_eat;
 			pthread_mutex_unlock(&tmp->t);
-			if ((int)(get_time() - lm) > tmp->time->time_to_die \
-			|| tmp->eated == tmp->time->times_to_eat)
+			if ((int)(get_time() - lm) > tmp->time->time_to_die || \
+			check_if_all_eated(tmp))
 			{
 				if ((tmp->eated) != tmp->time->times_to_eat)
 					ft_print(NULL, tmp, (get_time() - tmp->time->start));

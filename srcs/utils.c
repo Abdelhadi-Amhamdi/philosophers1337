@@ -6,7 +6,7 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 13:49:48 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/03/31 22:15:27 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/04/17 18:46:39 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,10 +75,20 @@ void	ft_lst_add_back(t_philo **list, t_philo *item)
 	}
 }
 
-unsigned long long	get_time(void)
+int	check_if_all_eated(t_philo *phs)
 {
-	struct timeval	time;
+	int		id;
+	t_philo	*tmp;
 
-	gettimeofday(&time, NULL);
-	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
+	tmp = phs;
+	id = tmp->id;
+	while (tmp)
+	{
+		if (tmp->eated != tmp->time->times_to_eat)
+			break ;
+		tmp = tmp->next;
+		if (tmp->id == id)
+			return (1);
+	}
+	return (0);
 }

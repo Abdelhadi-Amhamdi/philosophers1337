@@ -6,7 +6,7 @@
 #    By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/20 14:14:30 by aamhamdi          #+#    #+#              #
-#    Updated: 2023/04/17 02:28:07 by aamhamdi         ###   ########.fr        #
+#    Updated: 2023/04/17 18:55:02 by aamhamdi         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,7 @@ S_HEADER = philo.h
 B_HEADER = philo_bonus.h
 
 # files
-SRC = philo.c actions.c utils.c utils2.c
+SRC = philo.c actions.c utils.c utils2.c time.c
 SRCS = $(addprefix $(SRCS_DIR), $(SRC))
 OBJ = $(SRC:.c=.o)
 OBJS = $(addprefix $(BUILD_DIR), $(OBJ))
@@ -46,7 +46,7 @@ $(BUILD_DIR)%.o: $(B_SRCS_DIR)%.c $(B_SRCS_DIR)$(B_HEADER)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(NAME): $(BUILD_DIR) $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $@ 
+	$(CC) $(CFLAGS) $(OBJS) -o $@
 
 $(BUILD_DIR):
 	@mkdir $(BUILD_DIR)

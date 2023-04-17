@@ -6,7 +6,7 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 16:12:49 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/04/17 02:33:43 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/04/17 17:38:41 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,5 +86,6 @@ int	get_data_args(t_data *data, char **args)
 	}
 	if (args[4] && data->times_to_eat < 1)
 		return (1);
+	data->start = 0;
 	return (0);
 }

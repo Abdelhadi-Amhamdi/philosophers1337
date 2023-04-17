@@ -6,7 +6,7 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 13:58:44 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/04/17 02:25:39 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/04/17 17:55:11 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,12 @@ void	ft_start_philos(t_philo *phs, sem_t *sem)
 	phs->data->start = get_time();
 	while (phs)
 	{
-		phs->last_meal = get_time();
 		phs->pid = fork();
 		if (phs->pid == 0)
+		{
+			phs->last_meal = get_time();
 			routine(phs, sem);
+		}
 		phs = phs->next;
 		if (phs->id == 1)
 			break ;

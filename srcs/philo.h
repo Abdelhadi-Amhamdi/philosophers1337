@@ -6,7 +6,7 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 14:30:06 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/04/16 01:45:34 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/04/17 18:47:24 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ void				ft_print(char *str, t_philo *ph, unsigned long long time);
 int					ft_atoi(const char *src);
 void				ft_free_list(t_philo *phs);
 int					parsing(t_data *data, t_time *time);
+int					check_if_all_eated(t_philo *phs);
 
 // time
 unsigned long long	get_time(void);
