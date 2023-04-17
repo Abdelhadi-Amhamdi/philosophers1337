@@ -6,7 +6,7 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 16:12:49 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/04/17 02:25:57 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/04/17 02:33:43 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ int	get_data_args(t_data *data, char **args)
 	data->time_to_sleep = ft_atoi(args[3]);
 	if (args[4])
 	{
-		data->times_to_eat = atoi(args[4]);
+		data->times_to_eat = ft_atoi(args[4]);
 		data->is_infini = FALSE;
 	}
 	else
