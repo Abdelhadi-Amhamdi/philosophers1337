@@ -6,7 +6,7 @@
 #    By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/20 14:14:30 by aamhamdi          #+#    #+#              #
-#    Updated: 2023/04/16 02:13:31 by aamhamdi         ###   ########.fr        #
+#    Updated: 2023/04/17 02:28:07 by aamhamdi         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,6 @@ SRC = philo.c actions.c utils.c utils2.c
 SRCS = $(addprefix $(SRCS_DIR), $(SRC))
 OBJ = $(SRC:.c=.o)
 OBJS = $(addprefix $(BUILD_DIR), $(OBJ))
-
 
 B_SRC = philo_bonus.c philo_bonus_utils.c philo_bonus_utils2.c
 B_SRCS = $(addprefix $(B_SRCS_DIR), $(B_SRC))
