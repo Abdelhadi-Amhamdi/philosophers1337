@@ -6,7 +6,7 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 14:30:06 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/04/17 18:47:24 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/04/19 16:12:44 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,11 @@ typedef struct s_philo
 	struct s_philo		*next;
 }	t_philo;
 
-// actions 
 void				take_forks(t_philo *ph);
 void				eat(t_philo *ph);
 void				ft_sleep(t_philo *ph);
 void				ft_think(t_philo *ph);
 
-// utils
 int					get_args_data(char **args, t_time *time_data);
 void				check_if_infini(t_data *philo_data, t_time *time);
 void				ft_print(char *str, t_philo *ph, unsigned long long time);
@@ -66,12 +64,10 @@ void				ft_free_list(t_philo *phs);
 int					parsing(t_data *data, t_time *time);
 int					check_if_all_eated(t_philo *phs);
 
-// time
 unsigned long long	get_time(void);
 void				ft_usleep(unsigned long long time, \
 unsigned long long ttsleep);
 
-// list
 t_philo				*ft_get_last(t_philo *list);
 void				ft_lst_add_back(t_philo **list, t_philo *item);
 t_philo				*ft_creat_philo(int id, t_data *data, t_time *time);

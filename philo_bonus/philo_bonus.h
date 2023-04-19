@@ -6,7 +6,7 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 13:58:12 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/04/17 17:54:51 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/04/19 16:12:53 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 # include <stdlib.h>
 # include <signal.h>
 
-// structs
 typedef enum s_bool {FALSE,TRUE}	t_bool;
 
 typedef struct s_data
@@ -44,7 +43,6 @@ typedef struct s_philo
 	struct s_philo		*next;
 }	t_philo;
 
-// prototypes
 unsigned long long	get_time(void);
 int					ft_usleep(unsigned long long time, unsigned \
 long long ttsleep, t_philo *ph);
@@ -56,5 +54,7 @@ void				ft_lst_add_back(t_philo **list, t_philo *item);
 void				ft_print(char *msg, t_philo *ph);
 void				ft_eat(t_philo *ph, sem_t *sem_eat);
 int					ft_atoi(const char *src);
+int					parsing(t_data *data);
+void				ft_wait_for_end(t_philo *phs);
 
 #endif

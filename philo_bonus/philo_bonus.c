@@ -6,7 +6,7 @@
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/31 13:58:44 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/04/17 17:55:11 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/04/19 16:07:41 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,32 @@ void	routine(t_philo *philo, sem_t *semaphore)
 	exit (0);
 }
 
-void	ft_start_philos(t_philo *phs, sem_t *sem)
+void	ft_wait_for_end(t_philo *phs)
 {
 	pid_t	pid;
+	int		status;
 
+	pid = waitpid(-1, &status, 0);
+	while (phs)
+	{
+		if (status)
+		{
+			if (phs->pid != pid)
+				kill(phs->pid, SIGINT);
+		}
+		else
+		{
+			if (phs->pid != pid)
+				waitpid(phs->pid, NULL, 0);
+		}
+		phs = phs->next;
+		if (phs->id == 1)
+			break ;
+	}	
+}
+
+void	ft_start_philos(t_philo *phs, sem_t *sem)
+{
 	phs->data->start = get_time();
 	while (phs)
 	{
@@ -49,23 +71,7 @@ void	ft_start_philos(t_philo *phs, sem_t *sem)
 		if (phs->id == 1)
 			break ;
 	}
-	pid = waitpid(-1, NULL, 0);
-	while (phs)
-	{
-		if (phs->pid != pid)
-			kill(phs->pid, SIGINT);
-		phs = phs->next;
-		if (phs->id == 1)
-			break ;
-	}
-}
-
-int	parsing(t_data *data)
-{
-	if (data->philos_number < 1 || data->time_do_die < 1 || data->time_to_eat \
-	< 1 || data->time_to_sleep < 1)
-		return (1);
-	return (0);
+	ft_wait_for_end(phs);
 }
 
 void	ft_free_list(t_philo *ph)

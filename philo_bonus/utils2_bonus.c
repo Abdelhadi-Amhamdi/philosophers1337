@@ -1,24 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_bonus_utils2.c                               :+:      :+:    :+:   */
+/*   utils2_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aamhamdi <aamhamdi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 16:12:49 by aamhamdi          #+#    #+#             */
-/*   Updated: 2023/04/17 17:38:41 by aamhamdi         ###   ########.fr       */
+/*   Updated: 2023/04/19 15:54:57 by aamhamdi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
-
-unsigned long long	get_time(void)
-{
-	struct timeval	time;
-
-	gettimeofday(&time, NULL);
-	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
-}
 
 int	ft_atoi(const char *src)
 {
@@ -43,17 +35,6 @@ int	ft_atoi(const char *src)
 		index++;
 	}
 	return (result * signe);
-}
-
-int	ft_usleep(unsigned long long time, unsigned long long ttsleep, t_philo *ph)
-{
-	while ((get_time() - time) < ttsleep)
-	{
-		if ((int)(get_time() - ph->last_meal) > ph->data->time_do_die)
-			return (1);
-		usleep(500);
-	}
-	return (0);
 }
 
 void	ft_print(char *msg, t_philo *ph)
@@ -87,5 +68,13 @@ int	get_data_args(t_data *data, char **args)
 	if (args[4] && data->times_to_eat < 1)
 		return (1);
 	data->start = 0;
+	return (0);
+}
+
+int	parsing(t_data *data)
+{
+	if (data->philos_number < 1 || data->time_do_die < 1 || data->time_to_eat \
+	< 1 || data->time_to_sleep < 1)
+		return (1);
 	return (0);
 }
